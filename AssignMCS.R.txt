@@ -1,0 +1,107 @@
+# variable initialization
+
+initial_prize <- 2
+possible_outcomes <- c("H","T")
+
+#private functions
+
+# 1.double_price - this function doubles the money on getting Tails each time
+
+double_price <- function(current_prize){
+  
+  return (current_prize*2)
+}
+
+# 2.Flip_coin - this function generates random Heads and Tails
+
+flip_coin <- function(){
+  
+  side <- sample(possible_outcomes,1,replace = TRUE)
+  return (side)
+}
+
+# 3.This function holds the entire logic of running MCS, total games and
+#   calculating the average earnings of all runs
+
+play_game <- function(entry_fee,total_games,total_runs){
+  
+  sum_all_round_averages <- 0
+  occurances <- c()
+  
+  for( run in 1:total_runs){
+    final_average <- 0
+    total_run_average <- 0
+    
+    for (game in 1:total_games){
+      final_money <- 2
+      random_result<- flip_coin()
+      print(random_result)
+      
+      while (random_result=="T") {
+        
+        final_money <- double_price(final_money)
+        random_result <- flip_coin()
+        print(random_result)
+        
+        
+      }
+      cat("you have won the total of ",final_money," in ",game, "attempt \n")
+      final_average <- final_average+final_money
+      
+    }
+    
+    cat("You have totally won", final_average, "pounds out of", total_games," attemps \n")
+    
+    total_investment <- entry_fee*total_games
+    
+    cat("you have invested a total of", total_investment," pounds for",total_games," games \n")
+    
+    if (total_investment < final_average){
+      cat("Congrats! you have made a profit of",(final_average - total_investment),"pounds \n")
+      
+    }else{
+      cat("Opps! you have lost ",(total_investment - final_average),"pounds \n")
+    }
+    
+    total_run_average <- total_run_average+final_average
+    cat("round ",(run)," score -",total_run_average,"\n")
+    sum_all_round_averages <- sum_all_round_averages+total_run_average
+    print("------------------------------------------------------")
+    occurances<-c(occurances,total_run_average)
+    
+  }
+  
+  total_run_big_average <- sum_all_round_averages/total_runs
+  
+  if (total_run_big_average<total_investment){
+    cat("your total earnings are ",total_run_big_average,"for",total_runs,"\n")
+    cat("your have lost an average of ",(total_investment - total_run_big_average),"for",total_runs,"\n")
+    
+  }else{
+    
+    cat("you have earned an average of ",total_run_big_average,"for",total_runs," runs \n")
+  }
+  
+  plot(occurances,xlab="no of runs",ylab="score")
+  abline(h = total_investment, col = "red")
+  
+}
+
+#4. function that takes input and results your score
+
+Game_time<- function(){
+  continue<- "Y"
+  while(continue=="Y"){
+    entry_fee <- as.integer(readline(prompt = "Enter the entry fee= "))
+    total_games <- as.integer(readline(prompt = "Enter no of games you wanna play= "))
+    total_runs <- as.integer(readline(prompt = "enter no of runs required= "))
+    play_game(entry_fee,total_games,total_runs)
+    continue <- readline(prompt = "enter Y to continue playing or any key to exit")
+  }
+    
+  }
+  
+
+
+
+Game_time()
